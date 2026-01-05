@@ -11,16 +11,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
 @Tag(name = "users" , description = "Gestions Des Utilisateurs")
-public class userController {
+public class UserController {
 
 
     private final UserService userService;
 
-    public userController(UserService userService) {
+    public UserController(UserService userService) {
         this.userService = userService;
     }
 
@@ -46,9 +47,12 @@ public class userController {
             @ApiResponse(responseCode = "400",description = "invalid request"),
     })
     @PostMapping("/create")
-    public ResponseEntity<User> createUser(@RequestBody User user){
+    public ResponseEntity<Object> createUser(@RequestBody User user){
         User createdUser = userService.createUser(user);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
+        return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
+                "message","User created successfully",
+                "user",createdUser
+        ));
     }
 
     // Update User
@@ -62,9 +66,13 @@ public class userController {
     // Delete User
     @Operation(summary = "Delete User")
     @DeleteMapping("/{id}")
-    public ResponseEntity<User> deleteUser(@PathVariable(name = "id") Long id){
+    public ResponseEntity<Object> deleteUser(@PathVariable(name = "id") Long id){
         userService.deleteUserById(id);
-        return ResponseEntity.noContent().build(); // 204
+        return ResponseEntity.ok(Map.of(
+                "message","User deleted with succes",
+                "ID",id
+
+        )); // 204
     }
 
 

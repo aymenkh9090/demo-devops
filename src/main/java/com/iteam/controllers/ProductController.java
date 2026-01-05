@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/products")
@@ -33,9 +34,12 @@ public class ProductController {
 
     })
     @PostMapping("/create")
-    public ResponseEntity<Product> createProduct(@RequestBody Product product) {
+    public ResponseEntity<Object> createProduct(@RequestBody Product product) {
         Product savedProduct = productService.createProduct(product);
-        return  ResponseEntity.status(HttpStatus.CREATED).body(savedProduct);
+        return  ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
+                "message","Created Product Successfully",
+                "Product",savedProduct
+        ));
     }
     // Get All Product
     @Operation(summary = "Get all Product")
@@ -60,9 +64,12 @@ public class ProductController {
     // Delete Product
     @Operation(summary = "Delete a Product")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Product> deleteProduct(@PathVariable(name = "id") Long id) {
+    public ResponseEntity<Object> deleteProduct(@PathVariable(name = "id") Long id) {
         productService.deleteProduct(id);
-        return ResponseEntity.noContent().build(); // 204
+        return ResponseEntity.ok(Map.of(
+                "message","Product delet with succes",
+                "ID",id
+        ));
     }
 
 

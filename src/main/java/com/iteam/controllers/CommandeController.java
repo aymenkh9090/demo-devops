@@ -1,5 +1,6 @@
 package com.iteam.controllers;
 
+import com.iteam.dto.CreateCommandeRequestDTO;
 import com.iteam.entities.Commande;
 import com.iteam.service.CommandeService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/ordres")
@@ -32,9 +34,12 @@ public class CommandeController {
             @ApiResponse(responseCode = "400" , description = "invalid request")
     })
     @PostMapping("/create")
-    public ResponseEntity<Commande> createCommande(@RequestBody Commande commande) {
-        Commande savedCommande = commandeService.createCommande(commande);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedCommande);
+    public ResponseEntity<Object> createCommande(@RequestBody CreateCommandeRequestDTO commandeRequestDTO) {
+        Commande savedCommande = commandeService.createCommande(commandeRequestDTO.getUserId(), commandeRequestDTO.getProductsId());
+        return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
+                "message","Order create with succes",
+                "Orders " , savedCommande
+        ));
     }
     // Get All Order
     @Operation(summary = "Get all Order")
@@ -51,16 +56,24 @@ public class CommandeController {
     // Update Order
     @Operation(summary = "Update an Order")
     @PutMapping("/{id}")
-    public ResponseEntity<Commande> updateCommande(@PathVariable(name = "id") Long id,
+    public ResponseEntity<Object> updateCommande(@PathVariable(name = "id") Long id,
                                                    @RequestBody Commande commande) {
-        return ResponseEntity.ok(commandeService.updateCommande(id, commande));
+        Commande updatedCommande = commandeService.updateCommande(id, commande);
+        return ResponseEntity.ok(Map.of(
+                "message","Update Orders Successufully",
+                "commande",updatedCommande
+        ));
+
     }
     @Operation(summary = "Delete an Order")
     // Delete Order
     @DeleteMapping("/{id}")
-    public ResponseEntity<Commande> deleteCommande(@PathVariable Long id) {
+    public ResponseEntity<Object> deleteCommande(@PathVariable Long id) {
         commandeService.deleteCommande(id);
-        return ResponseEntity.noContent().build(); //204
+        return ResponseEntity.ok(Map.of(
+                "message","order delete with succes",
+                "id",id
+        ));
     }
 
 
