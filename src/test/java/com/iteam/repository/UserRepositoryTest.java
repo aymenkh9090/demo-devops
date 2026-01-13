@@ -1,0 +1,113 @@
+package com.iteam.repository;
+
+import com.iteam.entities.User;
+import com.iteam.repositories.UserRepository;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.jdbc.Sql;
+
+import java.util.List;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+@DataJpaTest
+@ActiveProfiles("test")
+@Sql(scripts = "/schema.sql")
+@DisplayName("Tests du repository User")
+class UserRepositoryTest {
+
+    @Autowired
+    private UserRepository userRepository;
+
+
+
+    @Test
+    @DisplayName("Doit sauvegarder et retrouver un utilisateur")
+    void saveAndFind() {
+
+        User user = new User();
+        user.setFirstName("Ahmed");
+        user.setLastName("Ben Ali");
+        user.setEmail("ahmed@email.com");
+        user.setPhoneNumber("12345678");
+
+
+        User saved = userRepository.save(user);
+        Optional<User> found = userRepository.findById(saved.getId());
+
+
+        assertThat(found).isPresent();
+        assertThat(found.get().getFirstName()).isEqualTo("Ahmed");
+        assertThat(found.get().getEmail()).isEqualTo("ahmed@email.com");
+    }
+
+    @Test
+    @DisplayName("Doit retourner tous les utilisateurs")
+    void findAll() {
+
+        User user1 = new User();
+        user1.setFirstName("Ahmed");
+        user1.setLastName("Ben Ali");
+        user1.setEmail("ahmed@email.com");
+        user1.setPhoneNumber("12345678");
+
+        User user2 = new User();
+        user2.setFirstName("Fatma");
+        user2.setLastName("Ben Ahmed");
+        user2.setEmail("fatma@email.com");
+        user2.setPhoneNumber("87654321");
+
+        userRepository.save(user1);
+        userRepository.save(user2);
+
+
+        List<User> users = userRepository.findAll();
+
+
+        assertThat(users).hasSize(2);
+    }
+
+    @Test
+    @DisplayName("Doit supprimer un utilisateur")
+    void deleteUser() {
+
+        User user = new User();
+        user.setFirstName("Ahmed");
+        user.setLastName("Ben Ali");
+        user.setEmail("ahmed@email.com");
+        user.setPhoneNumber("12345678");
+
+        User savedUser = userRepository.save(user);
+
+
+        userRepository.deleteById(savedUser.getId());
+
+
+        assertThat(userRepository.existsById(savedUser.getId())).isFalse();
+    }
+
+    @Test
+    @DisplayName("Doit mettre à jour un utilisateur")
+    void updateUser() {
+
+        User user = new User();
+        user.setFirstName("Ahmed");
+        user.setLastName("Ben Ali");
+        user.setEmail("ahmed@email.com");
+        user.setPhoneNumber("12345678");
+
+        User savedUser = userRepository.save(user);
+
+
+        savedUser.setFirstName("Ahmed Updated");
+        userRepository.save(savedUser);
+
+
+        Optional<User> updated = userRepository.findById(savedUser.getId());
+        assertThat(updated.get().getFirstName()).isEqualTo("Ahmed Updated");
+    }
+}

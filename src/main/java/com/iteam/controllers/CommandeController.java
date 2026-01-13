@@ -37,8 +37,8 @@ public class CommandeController {
     public ResponseEntity<Object> createCommande(@RequestBody CreateCommandeRequestDTO commandeRequestDTO) {
         Commande savedCommande = commandeService.createCommande(commandeRequestDTO.getUserId(), commandeRequestDTO.getProductsId());
         return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
-                "message","Order create with succes",
-                "Orders " , savedCommande
+                "message","Order create with success",
+                "order" , savedCommande
         ));
     }
     // Get All Order
@@ -61,7 +61,7 @@ public class CommandeController {
         Commande updatedCommande = commandeService.updateCommande(id, commande);
         return ResponseEntity.ok(Map.of(
                 "message","Update Orders Successufully",
-                "commande",updatedCommande
+                "order",updatedCommande
         ));
 
     }
@@ -71,7 +71,7 @@ public class CommandeController {
     public ResponseEntity<Object> deleteCommande(@PathVariable Long id) {
         commandeService.deleteCommande(id);
         return ResponseEntity.ok(Map.of(
-                "message","order delete with succes",
+                "message","order delete with success",
                 "id",id
         ));
     }

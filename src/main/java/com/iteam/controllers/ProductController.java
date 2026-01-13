@@ -67,7 +67,7 @@ public class ProductController {
     public ResponseEntity<Object> deleteProduct(@PathVariable(name = "id") Long id) {
         productService.deleteProduct(id);
         return ResponseEntity.ok(Map.of(
-                "message","Product delet with succes",
+                "message","Product delete with success",
                 "ID",id
         ));
     }

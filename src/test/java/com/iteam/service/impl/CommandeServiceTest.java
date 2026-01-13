@@ -23,7 +23,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -238,7 +237,7 @@ class CommandeServiceTest {
         verify(commandeRepository, times(1)).findById(1L);
         verify(commandeRepository, times(1)).save(any(Commande.class));
 
-        // ❌ PAS de productRepository ici
+
     }
 
 

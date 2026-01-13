@@ -69,10 +69,10 @@ public class UserController {
     public ResponseEntity<Object> deleteUser(@PathVariable(name = "id") Long id){
         userService.deleteUserById(id);
         return ResponseEntity.ok(Map.of(
-                "message","User deleted with succes",
-                "ID",id
+                "message","User deleted with success",
+                "id",id
 
-        )); // 204
+        ));
     }
 
 
