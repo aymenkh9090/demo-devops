@@ -5,13 +5,13 @@ SET REFERENTIAL_INTEGRITY FALSE;
 DROP TABLE IF EXISTS commande_products;
 DROP TABLE IF EXISTS commande;
 DROP TABLE IF EXISTS product;
-DROP TABLE IF EXISTS app_user;
+DROP TABLE IF EXISTS users;
 
 -- Enable foreign key constraints
 SET REFERENTIAL_INTEGRITY TRUE;
 
 -- Create tables in correct order
-CREATE TABLE app_user (
+CREATE TABLE users (
                           id BIGINT AUTO_INCREMENT PRIMARY KEY,
                           first_name VARCHAR(255) NOT NULL,
                           last_name VARCHAR(255) NOT NULL,
@@ -32,7 +32,7 @@ CREATE TABLE commande (
                           status VARCHAR(50),
                           price_totale DOUBLE PRECISION,
                           user_id BIGINT NOT NULL,
-                          FOREIGN KEY (user_id) REFERENCES app_user(id)
+                          FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
 CREATE TABLE commande_products (

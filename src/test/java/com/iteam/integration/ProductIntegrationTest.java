@@ -110,7 +110,7 @@ public class ProductIntegrationTest {
         mockMvc.perform(delete("/api/products/" + savedProduct.getId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("Product delete with success"))
-                .andExpect(jsonPath("$.id").value(savedProduct.getId().intValue()));
+                .andExpect(jsonPath("$.ID").value(savedProduct.getId().intValue()));
 
 
         assertThat(productRepository.count()).isEqualTo(0);

@@ -1,14 +1,12 @@
 package com.iteam.Exceptions;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserAlreadyExistsExceptions extends RuntimeException {
     private String message;
-
-    public UserAlreadyExistsExceptions() {
-
-    }
-
-    public UserAlreadyExistsExceptions(String message) {
-        super(message);
-        this.message = message;
-    }
 }
