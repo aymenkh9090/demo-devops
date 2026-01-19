@@ -1,0 +1,84 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  test-and-analysis:
+    name: Tests & Code Analysis
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Cache Maven dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: Build and run tests with coverage
+        run: |
+          mvn clean verify
+          mvn jacoco:report
+
+      - name: Verify JaCoCo report exists
+        run: |
+          echo "Checking JaCoCo report..."
+          if [ -f "target/site/jacoco/jacoco.xml" ]; then
+            echo "✅ JaCoCo XML report found"
+            echo "Lines in report: $(wc -l < target/site/jacoco/jacoco.xml)"
+          else
+            echo "❌ JaCoCo XML report not found!"
+            find . -name "jacoco.xml" -type f
+            exit 1
+          fi
+
+      - name: Upload JaCoCo report
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-report
+          path: target/site/jacoco/
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          projectBaseDir: .
+          args: >
+            -Dsonar.projectKey=wajdibenameur_dev-test-ops-aymen-wajdi
+            -Dsonar.organization=wajdibenameur
+            -Dsonar.sources=src/main/java
+            -Dsonar.tests=src/test/java
+            -Dsonar.java.binaries=target/classes
+            -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
+            -Dsonar.junit.reportPaths=target/surefire-reports
+            -Dsonar.host.url=https://sonarcloud.io
+            -Dsonar.scm.provider=git
+            -Dsonar.branch.name=${{ github.ref_name }}
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: |
+            target/surefire-reports/
+            target/failsafe-reports/
