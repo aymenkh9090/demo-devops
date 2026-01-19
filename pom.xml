@@ -29,7 +29,7 @@
 	<properties>
 		<java.version>17</java.version>
 		<!-- Configuration SonarCloud -->
-		<sonar.organization>Aymen bouraoui</sonar.organization>
+		<sonar.organization>aymenkh9090</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 		<sonar.projectKey>aymenkh9090_demo-devops</sonar.projectKey>
 
@@ -130,7 +130,7 @@
 			<plugin>
 				<groupId>org.sonarsource.scanner.maven</groupId>
 				<artifactId>sonar-maven-plugin</artifactId>
-				<version>3.10.0.2594</version>
+				<version>3.9.1.2184</version>
 			</plugin>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
